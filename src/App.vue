@@ -1,4 +1,5 @@
 <script>
+import { provide } from 'vue'
 import MessageReverser from './exercises/01-basic/exercise-1-1/MessageReverser.vue'
 import DataBinding from './exercises/01-basic/exercise-1-2/DataBinding.vue'
 import ForTable from './exercises/01-basic/exercise-1-3/ForTable.vue'
@@ -17,6 +18,14 @@ import DomManipulation from './exercises/05-lifecycle/exercise-5-3/dom-manipulat
 import BasicRouter from './exercises/06-router/exercise-6-1/basic-router.vue'
 import DynamicRoutes from './exercises/06-router/exercise-6-2/dynamic-routes.vue'
 import ProtectRouter from './exercises/06-router/exercise-6-3/protect-router.vue'
+import VuexBasic from './exercises/07-vuex/exercise-7-1/vuex-basic.vue'
+import VuexModules from './exercises/07-vuex/exercise-7-2/vuex-modules.vue'
+import ComplexState from './exercises/07-vuex/exercise-7-3/complex-state.vue'
+import TeleportSuspense from './exercises/08-vue3feature/exercise-8-3/teleport-suspense.vue'
+import CustomDirective from './exercises/09-directive/exercise-9-1/custom-directive.vue'
+import provideInject from './exercises/09-directive/exercise-9-2/provide-inject.vue'
+import ProvideInject from './exercises/09-directive/exercise-9-2/provide-inject.vue'
+import TodoApplicationPro from './exercises/11-todo-app/todo-application-pro.vue'
 export default {
   name: 'App',
   components: {
@@ -37,15 +46,27 @@ export default {
     DomManipulation,
     BasicRouter,
     DynamicRoutes,
-    ProtectRouter
-
+    ProtectRouter,
+    VuexBasic,
+    VuexModules,
+    ComplexState,
+    TeleportSuspense,
+    CustomDirective,
+    ProvideInject,
+    TodoApplicationPro
+  },
+  setup() {
+    const message = 'Test provide';
+    provide("message", message)
+    return {};
   }
 }
 </script>
 
 <template>
   <div>
-    <router-view></router-view>
+    <!-- <router-view></router-view> -->
+    <TodoApplicationPro />
   </div>
 </template>
 
