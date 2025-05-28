@@ -7,6 +7,9 @@ export const useTodoStore = defineStore("todos", {
     categories: ["Work", "Personal", "Shopping", "Health"],
     darkMode: localStorage.getItem('darkMode') === "true",
   }),
+  getters: {
+    getTodos: (state) => state.todos,
+  },
   actions: {
     // Create
     addTodo(todo) {
@@ -85,12 +88,21 @@ export const useTodoStore = defineStore("todos", {
       try {
         const savedTodos = localStorage.getItem("todos");
         if (savedTodos) {
-          this.todos = JSON.parse(savedTodos);
+          const parsedTodos = JSON.parse(savedTodos);
+          this.todos = parsedTodos;
+          return parsedTodos;
         }
+        return [];
       } catch (error) {
         console.error("Error loading todos from localStorage:", error);
         this.todos = [];
+        return [];
       }
+    },
+
+    updateTodosOrder(newOrder) {
+      this.todos = [...newOrder];
+      this.saveToLocalStorage();
     },
   },
 });

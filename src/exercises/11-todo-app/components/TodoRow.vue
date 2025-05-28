@@ -1,5 +1,8 @@
 <template>
-    <tr class="todo-row">
+    <tr class="todo-row" :data-draggable="true">
+      <td class="drag-cell">
+        <div class="drag-handle">⋮⋮</div>
+      </td>
       <td>
         <label class="checkbox-container">
           <input 
@@ -97,14 +100,57 @@
   <style scoped>
   .todo-row {
     transition: all 0.3s ease;
+    background: white;
+    border-bottom: 1px solid #eee;
+    position: relative;
   }
 
   .todo-row:hover {
     background: #f8f9fa;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .dark-mode .todo-row {
+    background: #2d2d2d;
+    border-bottom-color: #444;
   }
 
   .dark-mode .todo-row:hover {
     background: #363636;
+  }
+
+  /* Drag handle styles */
+  .drag-cell {
+    width: 40px;
+    padding: 0.5rem !important;
+  }
+
+  .drag-handle {
+    cursor: grab;
+    color: #666;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+
+  .drag-handle:hover {
+    background: #f0f0f0;
+    color: #333;
+  }
+
+  .dark-mode .drag-handle {
+    color: #ccc;
+  }
+
+  .dark-mode .drag-handle:hover {
+    background: #444;
+    color: #fff;
   }
 
   /* Checkbox styles */
@@ -114,29 +160,22 @@
     justify-content: center;
     cursor: pointer;
     user-select: none;
-
   }
 
   .checkbox-container input {
     cursor: pointer;
     width: 20px;
     height: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 0.5rem;
-    margin-right: 0.5rem;
-  }
-
-  .checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 20px;
-    width: 20px;
-    background-color: #eee;
+    border: 2px solid #ccc;
     border-radius: 4px;
     transition: all 0.3s ease;
   }
+
+  .checkbox-container input:checked {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+  }
+
   /* Completed task style */
   .completed {
     text-decoration: line-through;
@@ -150,6 +189,13 @@
     padding: 0.4rem 0.8rem;
     border-radius: 16px;
     font-size: 0.9rem;
+    display: inline-block;
+    transition: all 0.3s ease;
+  }
+
+  .category-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .dark-mode .category-badge {
@@ -173,6 +219,12 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
+    transition: all 0.3s ease;
+  }
+
+  .tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .dark-mode .tag {
@@ -194,14 +246,17 @@
     padding: 0.5rem;
     border-radius: 4px;
     transition: all 0.3s ease;
+    font-size: 1.2rem;
   }
 
   .edit-button:hover {
     background: #e3f2fd;
+    transform: scale(1.1);
   }
 
   .delete-button:hover {
     background: #ffebee;
+    transform: scale(1.1);
   }
 
   .dark-mode .edit-button:hover {
@@ -221,6 +276,12 @@
     font-size: 1rem;
     background: white;
     color: #333;
+    transition: all 0.3s ease;
+  }
+
+  .edit-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
   }
 
   .dark-mode .edit-input {
@@ -233,9 +294,31 @@
   .due-date {
     font-size: 0.9rem;
     color: #666;
+    transition: all 0.3s ease;
   }
 
   .dark-mode .due-date {
     color: #ccc;
+  }
+
+  /* Dragging styles */
+  .todo-row.sortable-ghost {
+    opacity: 0.5;
+    background: #f0f0f0;
+  }
+
+  .dark-mode .todo-row.sortable-ghost {
+    background: #444;
+  }
+
+  .todo-row.sortable-drag {
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    cursor: grabbing;
+  }
+
+  .dark-mode .todo-row.sortable-drag {
+    background: #2d2d2d;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
   </style>

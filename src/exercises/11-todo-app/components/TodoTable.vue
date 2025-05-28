@@ -1,38 +1,64 @@
 <template>
-    <div class="table-container">
-      <table class="todo-table">
-        <thead>
-          <tr>
-            <th>Status</th>
-            <th>Task</th>
-            <th>Category</th>
-            <th>Tags</th>
-            <th>Due Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <TodoRow 
-            v-for="todo in todos" 
-            :key="todo.id" 
-            :todo="todo"
-          />
-        </tbody>
-      </table>
-    </div>
-  </template>
-  
-  <script setup>
-  import { computed } from 'vue';
-  import { useTodoStore } from '../../../store/piniaStore';
-  import TodoRow from './TodoRow.vue';
-  
-  const todoStore = useTodoStore();
-  const todos = computed(() => todoStore.todos);
-  </script>
-  
-  <style scoped>
-    .table-container {
+  <div class="table-container">
+
+    <table class="todo-table">
+      <thead>
+        <tr>
+          <th><span class="drag-handle">☰</span></th>
+          <th>Status</th>
+          <th>Task</th>
+          <th>Category</th>
+          <th>Tags</th>
+          <th>Due Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <draggable
+        v-model="localTodos"
+        tag="tbody"
+        :component-data="{ tag: 'tr' }"
+        item-key="id"
+        @end="updateOrder"
+        handle=".drag-handle"
+      >
+        <template #item="{ element }">
+          <TodoRow :todo="element" />
+        </template>
+      </draggable>
+    </table>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted, watch } from 'vue';
+import { useTodoStore } from '../../../store/piniaStore';
+import TodoRow from './TodoRow.vue';
+import draggable from 'vuedraggable'
+
+const todoStore = useTodoStore();
+const localTodos = ref([]);
+
+const loadData = async () => {
+  localTodos.value = todoStore.getTodos;
+};
+
+onMounted(async () => {
+  await loadData();
+});
+
+watch(() => todoStore.todos, (newTodos) => {
+  localTodos.value = JSON.parse(JSON.stringify(newTodos));
+}, { deep: true });
+
+function updateOrder(evt) {
+  if (evt.added || evt.moved) {
+    todoStore.updateTodosOrder(localTodos.value);
+  }
+}
+</script>
+
+<style scoped>
+.table-container {
   overflow-x: auto;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -96,11 +122,11 @@
   transition: all 0.3s ease;
 }
 
-.checkbox-container:hover input ~ .checkmark {
+.checkbox-container:hover input~.checkmark {
   background-color: #ccc;
 }
 
-.checkbox-container input:checked ~ .checkmark {
+.checkbox-container input:checked~.checkmark {
   background-color: #4CAF50;
 }
 
@@ -110,7 +136,7 @@
   display: none;
 }
 
-.checkbox-container input:checked ~ .checkmark:after {
+.checkbox-container input:checked~.checkmark:after {
   display: block;
 }
 
@@ -226,4 +252,37 @@
   transition: all 0.3s ease;
 }
 
-  </style>
+.drag-handle {
+  cursor: move;
+  color: #666;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  user-select: none;
+  display: inline-block;
+}
+
+.drag-handle:hover {
+  background: #f0f0f0;
+}
+
+.dark-mode .drag-handle {
+  color: #ccc;
+}
+
+.dark-mode .drag-handle:hover {
+  background: #444;
+}
+
+.todo-row {
+  transition: background-color 0.3s ease;
+}
+
+.todo-row:hover {
+  background-color: #f8f9fa;
+}
+
+.dark-mode .todo-row:hover {
+  background-color: #363636;
+}
+</style>
