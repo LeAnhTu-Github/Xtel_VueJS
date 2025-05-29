@@ -5,11 +5,8 @@ export const useTodoStore = defineStore("todos", {
   state: () => ({
     todos: [],
     categories: ["Work", "Personal", "Shopping", "Health"],
-    darkMode: localStorage.getItem('darkMode') === "true",
+    darkMode: localStorage.getItem("darkMode") === "true",
   }),
-  getters: {
-    getTodos: (state) => state.todos,
-  },
   actions: {
     // Create
     addTodo(todo) {
@@ -27,17 +24,17 @@ export const useTodoStore = defineStore("todos", {
 
     // Read
     getTodoById(id) {
-      return this.todos.find(todo => todo.id === id);
+      return this.todos.find((todo) => todo.id === id);
     },
 
     // Update
     updateTodo(id, updatedTodo) {
-      const index = this.todos.findIndex(todo => todo.id === id);
+      const index = this.todos.findIndex((todo) => todo.id === id);
       if (index !== -1) {
         this.todos[index] = {
           ...this.todos[index],
           ...updatedTodo,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         };
         this.saveToLocalStorage();
       }
@@ -45,13 +42,13 @@ export const useTodoStore = defineStore("todos", {
 
     // Delete
     deleteTodo(id) {
-      this.todos = this.todos.filter(todo => todo.id !== id);
+      this.todos = this.todos.filter((todo) => todo.id !== id);
       this.saveToLocalStorage();
     },
 
     // Toggle completion status
     toggleTodoStatus(id) {
-      const todo = this.todos.find(todo => todo.id === id);
+      const todo = this.todos.find((todo) => todo.id === id);
       if (todo) {
         todo.completed = !todo.completed;
         this.saveToLocalStorage();
@@ -60,19 +57,19 @@ export const useTodoStore = defineStore("todos", {
 
     toggleDarkMode() {
       this.darkMode = !this.darkMode;
-      localStorage.setItem('darkMode', this.darkMode);
+      localStorage.setItem("darkMode", this.darkMode);
       if (this.darkMode) {
-        document.documentElement.classList.add('dark');
+        document.documentElement.classList.add("dark");
       } else {
-        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.remove("dark");
       }
     },
 
     initializeDarkMode() {
       if (this.darkMode) {
-        document.documentElement.classList.add('dark');
+        document.documentElement.classList.add("dark");
       } else {
-        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.remove("dark");
       }
     },
 
@@ -88,15 +85,11 @@ export const useTodoStore = defineStore("todos", {
       try {
         const savedTodos = localStorage.getItem("todos");
         if (savedTodos) {
-          const parsedTodos = JSON.parse(savedTodos);
-          this.todos = parsedTodos;
-          return parsedTodos;
+          this.todos = JSON.parse(savedTodos);
         }
-        return [];
       } catch (error) {
         console.error("Error loading todos from localStorage:", error);
         this.todos = [];
-        return [];
       }
     },
 
